@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Manage Courses</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+    body {
+        background: #f4f6fb;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+    }
+
+    .sidebar {
+        width: 240px;
+        min-height: 100vh;
+        background: #1a2744;
+
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        padding: 30px 0;
+
+        z-index: 1000;
+        box-sizing: border-box;
+    }
+
+
+    .sidebar .brand {
+        color: white;
+        font-size: 20px;
+        font-weight: 700;
+
+        padding: 0 24px 30px;
+
+        border-bottom: 1px solid #2d3d6b;
+
+        display: block;
+    }
+
+
+    .sidebar a {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        color: #8a9abf;
+        text-decoration: none;
+
+        padding: 13px 24px;
+
+        font-size: 14px;
+        font-weight: 500;
+
+        transition: all 0.3s ease;
+
+        box-sizing: border-box;
+    }
+
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        background: #243460;
+        color: white;
+
+        border-left: 3px solid #4e7cff;
+    }
+    .logout-btn {
+        position: absolute;
+
+        bottom: 30px;
+        left: 0;
+
+        width: 100%;
+    }
+
+    .main {
+        margin-left: 240px;
+
+        padding: 30px;
+
+        min-height: 100vh;
+
+        box-sizing: border-box;
+    }
+    .card-box {
+        background: white;
+
+        border-radius: 16px;
+
+        padding: 24px;
+
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+    }
+
+    .btn-add {
+        background: #4e7cff;
+
+        color: white;
+
+        border: none;
+
+        border-radius: 10px;
+
+        padding: 10px 24px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+    }
+
+
+    .btn-add:hover {
+        background: #3d6df0;
+        color: white;
+    }
+    .table th {
+        font-size: 12px;
+
+        text-transform: uppercase;
+
+        color: #8a9abf;
+
+        font-weight: 600;
+    }
+
+
+    .table td {
+        font-size: 14px;
+
+        vertical-align: middle;
+    }
+
+
+    .btn-del {
+        background: #fef2f2;
+
+        color: #ef4444;
+
+        border: none;
+
+        border-radius: 8px;
+
+        padding: 6px 14px;
+
+        font-size: 13px;
+
+        cursor: pointer;
+    }
+
+
+    .btn-del:hover {
+        background: #fee2e2;
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 768px) {
+
+        .sidebar {
+            width: 200px;
+        }
+
+        .main {
+            margin-left: 200px;
+            padding: 20px;
+        }
+
+    }
+
+</style>
+</head>
+<body>
+
+<div th:replace="~{fragments/admin-sidebar :: sidebar}"></div>
+
+<div class="main">
+    <h4 style="font-weight:700; color:#1a2744; margin-bottom:24px;">📚 Manage Courses</h4>
+
+    <!-- Add Course Form -->
+    <div class="card-box mb-4">
+        <h6 style="font-weight:700; margin-bottom:18px;">➕ Add New Course</h6>
+        <form th:action="@{/admin/courses/add}" method="post" th:object="${newCourse}">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" th:field="*{name}" class="form-control"
+                           placeholder="Course Name" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" th:field="*{duration}" class="form-control"
+                           placeholder="Duration (e.g. 3 Months)">
+                </div>
+                <div class="col-md-4">
+                    <input type="number" th:field="*{price}" class="form-control"
+                           placeholder="Price (₹)">
+                </div>
+                <div class="col-md-8">
+                    <input type="text" th:field="*{description}" class="form-control"
+                           placeholder="Short Description">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" th:field="*{thumbnailUrl}" class="form-control"
+                           placeholder="Thumbnail Image URL">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn-add">Add Course</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Courses Table -->
+    <div class="card-box">
+        <h6 style="font-weight:700; margin-bottom:18px;">All Courses</h6>
+        <table class="table">
+            <thead><tr>
+                <th>#</th><th>Name</th><th>Duration</th>
+                <th>Price</th><th>Action</th>
+            </tr></thead>
+            <tbody>
+            <tr th:each="c, i : ${courses}">
+                <td th:text="${i.count}"></td>
+                <td th:text="${c.name}"></td>
+                <td th:text="${c.duration}"></td>
+                <td th:text="'₹ ' + ${c.price}"></td>
+                <td>
+                    <form th:action="@{/admin/courses/delete/{id}(id=${c.id})}" method="post">
+                        <button type="submit" class="btn-del">🗑 Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

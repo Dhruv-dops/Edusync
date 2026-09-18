@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>EduSync - Attendance Management</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body {
+    background: #f4f6fb;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.page-container {
+    margin-left: 260px;
+    margin-right: 20px;
+    padding: 40px 20px;
+}
+
+.page-header {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 2px 15px rgba(0,0,0,.05);
+    margin-bottom: 25px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2744;
+}
+
+.page-subtitle {
+    color: #8a9abf;
+}
+
+.attendance-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 2px 15px rgba(0,0,0,.05);
+}
+
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: #1a2744;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 30px 0;
+    z-index: 100;
+}
+
+.sidebar .brand {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 0 24px 30px;
+    border-bottom: 1px solid #2d3d6b;
+    display: block;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #8a9abf;
+    text-decoration: none;
+    padding: 13px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all .3s ease;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #243460;
+    color: white;
+    border-left: 3px solid #4e7cff;
+}
+
+.logout-btn {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+}
+
+.table th{
+    background:#f8f9fc;
+    color:#1a2744;
+}
+
+.student-avatar{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#4e7cff;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    margin-right:10px;
+}
+
+.student-info{
+    display:flex;
+    align-items:center;
+}
+
+</style>
+
+</head>
+<body>
+
+	<div th:replace="~{fragments/admin-sidebar :: sidebar}"></div>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <div class="page-title">
+            📅 Attendance Management
+        </div>
+
+        <div class="page-subtitle">
+            Mark attendance for students enrolled in a course
+        </div>
+
+    </div>
+
+    <div class="attendance-card">
+
+        <!-- LOAD STUDENTS FORM -->
+
+        <form action="/admin/loadAttendance" method="get">
+
+            <div class="row">
+
+                <div class="col-md-8">
+
+                    <label class="form-label">
+                        Select Course
+                    </label>
+
+                    <select class="form-select"
+                            name="courseName">
+
+                        <option value="">
+                            Select Course
+                        </option>
+
+                        <option th:each="course : ${courses}"
+                                th:value="${course.name}"
+                                th:text="${course.name}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        &nbsp;
+                    </label>
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+
+                        Load Students
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <!-- SHOW STUDENTS -->
+
+        <div th:if="${enrolledStudents != null}">
+
+            <hr class="my-4">
+
+            <h4 class="mb-3">
+
+                Attendance -
+                <span th:text="${selectedCourse}"></span>
+
+            </h4>
+
+            <!-- SAVE ATTENDANCE FORM -->
+
+            <form action="/admin/saveAttendance"
+                  method="post">
+
+                <input type="hidden"
+                       name="courseName"
+                       th:value="${selectedCourse}">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Attendance Date
+                    </label>
+
+                    <input type="date"
+                           class="form-control"
+                           name="attendanceDate"
+                           required>
+
+                </div>
+
+                <table class="table table-bordered table-hover">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Student Email</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="order : ${enrolledStudents}">
+
+                        <td>
+
+                            <div class="student-info">
+
+                                <div class="student-avatar"
+                                     th:text="${#strings.substring(order.userEmail,0,1)}">
+                                </div>
+
+                                <span th:text="${order.userEmail}">
+                                </span>
+
+                            </div>
+
+                            <input type="hidden"
+                                   name="emails"
+                                   th:value="${order.userEmail}">
+
+                        </td>
+
+                        <td>
+
+                            <select class="form-select"
+                                    name="statuses">
+
+                                <option value="PRESENT">
+                                    ✅ Present
+                                </option>
+
+                                <option value="ABSENT">
+                                    ❌ Absent
+                                </option>
+
+                            </select>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+                <div class="text-end">
+
+                    <button type="submit"
+                            class="btn btn-success">
+
+                        💾 Save Attendance
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

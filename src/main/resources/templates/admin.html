@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+    background:#f4f6fb;
+    font-family:'Segoe UI',sans-serif;
+}
+
+/* Sidebar */
+.sidebar{
+    width:240px;
+    min-height:100vh;
+    background:#1a2744;
+    position:fixed;
+    top:0;
+    left:0;
+    padding:30px 0;
+    z-index:100;
+}
+
+.sidebar .brand{
+    color:white;
+    font-size:20px;
+    font-weight:700;
+    padding:0 24px 30px;
+    border-bottom:1px solid #2d3d6b;
+    display:block;
+}
+
+.sidebar a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#8a9abf;
+    text-decoration:none;
+    padding:13px 24px;
+    font-size:14px;
+    font-weight:500;
+    transition:all .3s ease;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+    background:#243460;
+    color:white;
+    border-left:3px solid #4e7cff;
+}
+
+.logout-btn{
+    position:absolute;
+    bottom:30px;
+    width:100%;
+}
+
+/* Main */
+.main{
+    margin-left:240px;
+    padding:30px;
+}
+
+/* Topbar */
+.topbar{
+    background:white;
+    border-radius:16px;
+    padding:18px 24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 12px rgba(0,0,0,.05);
+    margin-bottom:28px;
+}
+
+/* Dashboard Cards */
+.stat-card{
+    background:white;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 2px 12px rgba(0,0,0,.05);
+    display:flex;
+    align-items:center;
+    gap:18px;
+    text-decoration:none;
+    cursor:pointer;
+    transition:all .3s ease;
+    height:120px;
+}
+
+.stat-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 12px 25px rgba(0,0,0,.12);
+}
+
+.stat-card:hover .stat-lbl{
+    color:#4e7cff;
+}
+
+.stat-icon{
+    width:60px;
+    height:60px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+}
+
+.stat-num{
+    font-size:28px;
+    font-weight:700;
+    color:#1a2744;
+}
+
+.stat-lbl{
+    font-size:14px;
+    color:#8a9abf;
+    transition:.3s;
+}
+
+/* Content Card */
+.card-box{
+    background:white;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 2px 12px rgba(0,0,0,.05);
+    margin-top:24px;
+}
+
+.card-box h5{
+    color:#1a2744;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.table th{
+    border:none;
+    font-size:12px;
+    text-transform:uppercase;
+    color:#8a9abf;
+    font-weight:600;
+}
+
+.table td{
+    vertical-align:middle;
+    font-size:14px;
+}
+
+.table tbody tr:hover{
+    background:#f8faff;
+}
+
+.badge-present{
+    background:#e8f8f0;
+    color:#22c55e;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:11px;
+}
+
+.badge-absent{
+    background:#fef2f2;
+    color:#ef4444;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:11px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div th:replace="~{fragments/admin-sidebar :: sidebar}"></div>
+
+<!-- Main Content -->
+<div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+
+        <div>
+            <h4 style="margin:0;font-weight:700;color:#1a2744;">
+                Dashboard
+            </h4>
+
+            <small class="text-muted">
+                Welcome back, Admin 👋
+            </small>
+        </div>
+
+        <span
+        th:text="${SessionUser != null ? SessionUser.name : 'Admin'}"
+        style="font-weight:600;color:#1a2744;">
+        </span>
+
+    </div>
+
+    <!-- Action Cards -->
+    <div class="row g-3">
+
+        <!-- Students -->
+        <div class="col-md-4">
+            <a href="/admin/students" class="stat-card">
+
+                <div class="stat-icon"
+                     style="background:#eaf3fc;">
+                    👥
+                </div>
+
+                <div>
+                    <div class="stat-num"
+                         th:text="${totalStudents}">
+                        0
+                    </div>
+
+                    <div class="stat-lbl">
+                        Manage Students
+                    </div>
+                </div>
+
+            </a>
+        </div>
+
+        <!-- Courses -->
+        <div class="col-md-4">
+            <a href="/admin/courses" class="stat-card">
+
+                <div class="stat-icon"
+                     style="background:#e8f8f0;">
+                    📚
+                </div>
+
+                <div>
+                    <div class="stat-num"
+                         th:text="${totalCourses}">
+                        0
+                    </div>
+
+                    <div class="stat-lbl">
+                        Manage Courses
+                    </div>
+                </div>
+
+            </a>
+        </div>
+
+        <!-- Attendance -->
+        <div class="col-md-4">
+            <a href="/admin/attendance" class="stat-card">
+
+                <div class="stat-icon"
+                     style="background:#fff8e6;">
+                    ✅
+                </div>
+
+                <div>
+                    <div class="stat-num"
+                         th:text="${totalAttendance}">
+                        0
+                    </div>
+
+                    <div class="stat-lbl">
+                        Attendance Records
+                    </div>
+                </div>
+
+            </a>
+        </div>
+        
+        <div class="col-md-4">
+    <a href="/admin/questions" class="stat-card">
+
+        <div class="stat-icon"
+             style="background:#f3e8ff;">
+            📝
+        </div>
+
+        <div>
+            <div class="stat-num"
+                 th:text="${totalQuestions}">
+                0
+            </div>
+
+            <div class="stat-lbl">
+                Manage Questions
+            </div>
+        </div>
+
+    </a>
+</div>
+
+    </div>
+
+    <!-- Recent Attendance Full Width -->
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="card-box">
+
+                <h5>
+                    ✅ Recent Activity
+                </h5>
+
+                <table class="table">
+
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Activity</th>
+            <th>Time</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="log : ${recentActivities}">
+
+            <td th:text="${log.username}"></td>
+
+            <td th:text="${log.activity}"></td>
+
+            <td th:text="${#temporals.format(log.timestamp,
+                 'dd MMM yyyy HH:mm')}">
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>EduSync AI</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+    background:#f5f7fb;
+}
+
+.chat-container{
+    height:90vh;
+    margin-top:20px;
+}
+
+.sidebar{
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    height:100%;
+    box-shadow:0 4px 20px rgba(0,0,0,.08);
+}
+
+.bot-avatar{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:#e8e7ff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:60px;
+    margin:auto;
+}
+
+.chat-card{
+    background:white;
+    border-radius:20px;
+    height:100%;
+    box-shadow:0 4px 20px rgba(0,0,0,.08);
+    display:flex;
+    flex-direction:column;
+}
+
+.chat-header{
+    padding:25px;
+    border-bottom:1px solid #eee;
+}
+
+.chat-body{
+    flex:1;
+    overflow-y:auto;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+
+.bot-message{
+    background:#f8f9fa;
+    padding:15px;
+    border-radius:15px;
+    border-bottom-left-radius: 0;
+    max-width:60%;
+    margin-bottom:20px;
+    align-self: flex-start;
+}
+
+.user-message{
+    background:linear-gradient(135deg,#5d5fff,#7b5cff);
+    color:white;
+    padding:15px;
+    border-radius:15px;
+    border-bottom-right-radius: 0;
+    max-width:60%;
+    margin-left:auto;
+    margin-bottom:20px;
+    align-self: flex-end;
+}
+
+.loading-msg {
+    background:#f8f9fa;
+    padding:15px;
+    border-radius:15px;
+    max-width:60%;
+    margin-bottom:20px;
+    align-self: flex-start;
+    color: #999;
+    font-style: italic;
+}
+
+.chat-footer{
+    padding:20px;
+    border-top:1px solid #eee;
+}
+
+.chat-input{
+    border-radius:15px;
+    height:55px;
+}
+
+.send-btn{
+    background:linear-gradient(135deg,#5d5fff,#7b5cff);
+    color:white;
+    border:none;
+    border-radius:15px;
+    width:130px;
+    font-weight:bold;
+}
+
+.feature-list li{
+    margin-bottom:15px;
+    list-style:none;
+}
+
+.info-box{
+    background:#eef0ff;
+    color:#4b4bd6;
+    padding:15px;
+    border-radius:15px;
+    margin-top:30px;
+    text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div sec:authorize="isAnonymous()">
+    <div th:replace="~{fragments/header :: crm-header}"></div>
+</div>
+
+<div sec:authorize="isAuthenticated()">
+    <div th:replace="~{fragments/header :: user-header}"></div>
+</div>
+
+<div class="container-fluid">
+
+<div class="row chat-container">
+
+    <!-- Left Panel -->
+    <div class="col-lg-3 mb-3">
+
+        <div class="sidebar">
+
+            <div class="bot-avatar">
+                🤖
+            </div>
+
+            <h2 class="text-center mt-4">EduSync AI</h2>
+
+            <p class="text-center text-muted">
+                Your smart assistant for all EduSync queries.
+            </p>
+
+            <hr>
+
+            <h5>You can ask me about</h5>
+
+            <ul class="feature-list mt-4">
+                <li>📚 Courses & Programs</li>
+                <li>💰 Course Fees</li>
+                <li>🏆 Certificates</li>
+                <li>📅 Demo Classes</li>
+                <li>📝 Enrollment Process</li>
+                <li>🔄 Refund Policy</li>
+                <li>🎓 Placement Support</li>
+            </ul>
+
+            <div class="info-box">
+                I only answer EduSync related questions.
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Right Panel -->
+    <div class="col-lg-9">
+
+        <div class="chat-card">
+
+            <div class="chat-header">
+                <h2>🤖 EduSync AI Assistant</h2>
+                <p class="text-muted mb-0">Hi! How can I help you today?</p>
+            </div>
+
+            <div class="chat-body" id="chatBox">
+
+                <!-- Default Bot Message -->
+                <div class="bot-message">
+                    Hello 👋<br><br>
+                    Ask me anything about courses,
+                    certificates, fees, demo classes and more.
+                </div>
+
+            </div>
+
+            <div class="chat-footer">
+
+                <div class="row">
+
+                    <div class="col-md-10">
+                        <input
+                            type="text"
+                            id="question"
+                            class="form-control chat-input"
+                            placeholder="Ask EduSync AI..."
+                            required>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="button" id="send-btn" class="btn send-btn h-100 w-100">
+                            Send
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+<script>
+
+    const sendBtn = document.getElementById("send-btn");
+    const questionInput = document.getElementById("question");
+    const chatBox = document.getElementById("chatBox");
+
+    async function sendMessage() {
+
+        const question = questionInput.value.trim();
+        if (!question) return;
+
+        // Show user message on RIGHT
+        chatBox.innerHTML += `
+            <div class="user-message">${question}</div>
+        `;
+
+        questionInput.value = "";
+
+        // Show loading on LEFT
+        chatBox.innerHTML += `
+            <div class="loading-msg" id="loading">EduSync AI is typing...</div>
+        `;
+
+        // Scroll to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const response = await fetch(`/ask-ai?question=${encodeURIComponent(question)}`, {
+                method: "POST"
+            });
+
+            const answer = await response.text();
+
+            // Remove loading
+            document.getElementById("loading").remove();
+
+            // Show AI answer on LEFT
+            chatBox.innerHTML += `
+                <div class="bot-message">${answer}</div>
+            `;
+
+        } catch (error) {
+            document.getElementById("loading").remove();
+            chatBox.innerHTML += `
+                <div class="bot-message">⚠️ Something went wrong. Please try again.</div>
+            `;
+        }
+
+        // Scroll to bottom again after answer
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Click Send button
+    sendBtn.addEventListener("click", sendMessage);
+
+    // Press Enter to send
+    questionInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") sendMessage();
+    });
+
+</script>
+
+</body>
+</html>

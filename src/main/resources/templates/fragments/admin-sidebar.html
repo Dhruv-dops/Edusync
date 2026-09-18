@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="sidebar">
+
+    <div class="sidebar">
+
+        <span class="brand">
+            🎓 EduSync Admin
+        </span>
+
+        <a href="/admin/dashboard">
+            📊 Dashboard
+        </a>
+
+        <a href="/admin/students">
+            👥 Students
+        </a>
+
+        <a href="/admin/courses">
+            📚 Courses
+        </a>
+
+        <a href="/admin/attendance">
+            ✅ Attendance
+        </a>
+
+        <a href="/admin/questions">
+            📝 Questions
+        </a>
+
+        <div class="logout-btn">
+
+            <form th:action="@{/logout}" method="post">
+
+                <button type="submit"
+                        style="
+                        width:85%;
+                        margin:0 auto;
+                        display:block;
+                        background:#e74c5e;
+                        color:white;
+                        border:none;
+                        padding:12px;
+                        border-radius:10px;
+                        cursor:pointer;">
+
+                    🚪 Logout
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

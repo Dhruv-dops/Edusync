@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Certificate Test</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+
+<h2 th:text="${courseName} + ' Certification Test'"></h2>
+
+<form method="post"
+      action="/submit-test">
+
+<input type="hidden"
+       name="courseName"
+       th:value="${courseName}">
+
+<div th:each="q : ${questions}"
+     class="card p-3 mb-3">
+
+    <h5 th:text="${q.question}"></h5>
+
+    <div>
+        <input type="radio"
+               th:name="'q_'+${q.id}"
+               value="A">
+        <span th:text="${q.optionA}"></span>
+    </div>
+
+    <div>
+        <input type="radio"
+               th:name="'q_'+${q.id}"
+               value="B">
+        <span th:text="${q.optionB}"></span>
+    </div>
+
+    <div>
+        <input type="radio"
+               th:name="'q_'+${q.id}"
+               value="C">
+        <span th:text="${q.optionC}"></span>
+    </div>
+
+    <div>
+        <input type="radio"
+               th:name="'q_'+${q.id}"
+               value="D">
+        <span th:text="${q.optionD}"></span>
+    </div>
+
+</div>
+
+<button class="btn btn-primary">
+    Submit Test
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!--navbarStart-->
+   <div th:fragment="crm-header">
+     
+   <nav class="navbar navbar-expand-lg bg-dark">
+  <div class="container">
+    <h1 class="navbar-brand h1 text-light" href="#">EduSync</h1>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active text-light" aria-current="page" href="/index" >Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-light" href="/mycourses">My Courses</a>
+        </li>
+     <!--     <li class="nav-item">
+          <a class="nav-link text-light" href="#">Book Demo</a>
+        </li> -->
+         <li class="nav-item">
+          <a class="nav-link text-light" href="/eduAi"> (EduSync AI <img class="mb-1 ms-2" width="25" height="25" src="https://img.icons8.com/office/40/chatbot.png" alt="chatbot"/> )</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Menu
+          </a>
+          <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Student Attendence</a></li>
+                  <li><a class="dropdown-item" href="#">Apply Certificate</a></li>
+                <li><a class="dropdown-item" href="#">Recording</a></li>
+             <li><a class="dropdown-item" href="#">Live Classes</a></li>
+            <li><a class="dropdown-item" href="#">Syllabus Download</a></li>
+             <li><a class="dropdown-item" href="#">Test</a></li>
+            <li><a class="dropdown-item" href="#">Placement Drive</a></li>
+            <li><a class="dropdown-item" href="#">Placed Students</a></li>
+            <li><a class="dropdown-item" href="#">New Courses</a></li>
+            <li><a class="dropdown-item" href="#">Events</a></li>
+           <li><a class="dropdown-item" href="#">Practice Questions</a></li>
+          </ul>
+        </li>
+       
+      </ul>
+
+      <a href="/login" class="btn bg-warning custom-btn me-3" style="width:90px;">Login</a>
+<a href="/register" class="btn bg-warning custom-btn" style="width:120px;">Registration</a>
+      
+
+    </div>
+  </div>
+</nav>
+
+   </div>
+   <!--navbarClosed-->
+   
+     <!-- ✅ UserNavbar FRAGMENT -->
+<nav th:fragment="user-header"
+     style="background:#212529;
+            padding:15px 40px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;">
+
+    <!-- Brand -->
+    <a th:href="@{/}"
+       style="color:white;
+              text-decoration:none;
+              font-size:1.6rem;
+              font-weight:700;">
+        EduSync India
+    </a>
+
+    <!-- Navigation -->
+    <ul style="list-style:none;
+               display:flex;
+               gap:25px;
+               margin:0;
+               padding:0;">
+
+        <li>
+            <a th:href="@{/}"
+               style="color:white;
+                      text-decoration:none;
+                      font-weight:500;">
+                Home
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/eduAi}"
+               style="color:white;
+                      text-decoration:none;
+                      font-weight:500;">
+                EduSync AI
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/enrollment}"
+               style="color:white;
+                      text-decoration:none;
+                      font-weight:500;">
+                My Enrollment
+            </a>
+        </li>
+        
+        <li>
+    <a th:href="@{/attendance}"
+    style="color:white;
+                      text-decoration:none;
+                      font-weight:500;">
+    
+       My Attendance
+    </a>
+</li>
+
+    </ul>
+
+    <!-- Right Side -->
+    <div style="display:flex;
+                align-items:center;
+                gap:15px;">
+
+        <span style="color:white;
+                     font-size:18px;
+                     font-weight:500;">
+            😊 Hey 👋
+            <span th:text="${loggedUser.name}">Franki</span>
+        </span>
+
+        <!-- Profile Button -->
+        <a th:href="@{/profile}"
+           style="background:linear-gradient(135deg,#3b82f6,#2563eb);
+                  color:white;
+                  text-decoration:none;
+                  padding:10px 18px;
+                  border-radius:12px;
+                  font-size:14px;
+                  font-weight:600;
+                  box-shadow:0 4px 12px rgba(37,99,235,.35);
+                  transition:0.3s;">
+            👤 Profile
+        </a>
+
+        <!-- Logout -->
+        <form th:action="@{/logout}" method="post" style="margin:0;">
+            <button type="submit"
+                    style="background:#dc3545;
+                           color:white;
+                           border:none;
+                           padding:10px 18px;
+                           border-radius:12px;
+                           font-size:14px;
+                           font-weight:600;
+                           cursor:pointer;">
+                Logout
+            </button>
+        </form>
+
+    </div>
+
+</nav>
+</body>
+</html>
